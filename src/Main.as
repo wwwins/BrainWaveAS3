@@ -2,6 +2,9 @@ package
 {
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.TimerEvent;
+	import flash.external.ExternalInterface;
+	import flash.utils.Timer;
 	import frocessing.display.*;
 	
 	/**
@@ -19,8 +22,10 @@ package
 		private var c:int = 7;
 		private var t:Number = 0;
 		
-		private var myArray:Array = [0];
+		private var eegArray:Array;
 		private var arrBar:Array;
+		
+		private var tm:Timer;
 		
 		public function Main()
 		{
@@ -33,6 +38,7 @@ package
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 			// entry point
 			
+			eegArray = [];
 			arrBar = [];
 			for (var i:int = 0; i <= c; i++)
 			{
@@ -55,6 +61,7 @@ package
 				for (var i:int = 0; i < arrBar.length; i++)
 				{
 					arrBar[i].to = random(1, 25);
+					//arrBar[i].to = eegArray.shift()[i];
 				}
 			}
 			t = t + 1;
@@ -71,7 +78,110 @@ package
 			trace("mouseReleased");
 			loop();
 		}
+		
+		private function timerHandler(e:TimerEvent):void
+		{
+			if (ExternalInterface.available)
+			{
+				try
+				{
+					ExternalInterface.addCallback("setEEG", fromJs_setEEG);
+					ExternalInterface.addCallback("setAttention", fromJs_setAttention);
+					ExternalInterface.addCallback("start", fromJs_start);
+					ExternalInterface.addCallback("showLoading", fromJs_showLoading);
+					ExternalInterface.addCallback("showFinish", fromJs_showFinish);
+					tm.stop();
+					tm.removeEventListener(TimerEvent.TIMER, timerHandler);
+				}
+				catch (e:Error)
+				{
+				}
+			}
+		}
+
+		private function initExternalInterface():void
+		{
+			tm = new Timer(100);
+			tm.addEventListener(TimerEvent.TIMER, timerHandler);
+			if (ExternalInterface.available)
+			{
+				try
+				{
+					ExternalInterface.addCallback("setEEG", fromJs_setEEG);
+					ExternalInterface.addCallback("setAttention", fromJs_setAttention);
+					ExternalInterface.addCallback("start", fromJs_start);
+					ExternalInterface.addCallback("showLoading", fromJs_showLoading);
+					ExternalInterface.addCallback("showFinish", fromJs_showFinish);
+				}
+				catch (e:Error)
+				{
+					tm.start();
+				}
+			}
+		
+		}
+		
+		//
+		// javascript call falsh
+		//
+		//showFinish()
+		//在主遊戲畫面顯示結果畫面
+		private function fromJs_showFinish():void 
+		{
+			
+		}
+
+		//showLoading()
+		//在主遊戲畫面顯示Loading, 並計算情緒代碼
+		private function fromJs_showLoading():void 
+		{
+			
+		}
 	
+		//start(no)
+		//由待機畫面進場到主遊戲畫面
+		//no參數: int : 體驗編號
+		private function fromJs_start(__no:int):void 
+		{
+			
+		}
+		
+		//setAttention(attention)
+		//設定專注度
+		//attention參數值的範圍: 0~100
+		private function fromJs_setAttention(__attention:int):void 
+		{
+			
+		}
+		
+		//setEEG(delta, theta, lowAlpha, highAlpha, lowBeta, highBeta, lowGamma, highGamma)
+		//設定腦波值
+		//每個參數值的範圍: 0~16777215(0xFFFFFF 3Byte的長整數)
+		private function fromJs_setEEG(__delta:int, __theta:int, __lowAlpha:int, __highAlpha:int, __lowBeta:int, __highBeta:int, __lowGamma:int, __highGamma:int):void 
+		{
+			eegArray.push([__delta,__theta,__lowAlpha,__highAlpha,__lowBeta,__highBeta,__lowGamma,__highGamma]);
+		}
+		
+		//
+		// flash call javascript
+		//
+		//Flash_onReady()
+		//當已進入待機畫面時呼叫
+		// ExternalInterface.call("Flash_onReady");
+		//
+		//Flash_onStarted()
+		//當已進入到主遊戲畫面時呼叫
+		//ExternalInterface.call("Flash_onStarted");
+		//
+		//Flash_onLoading(emotion)
+		//當已進入到Loading畫面, 並且計算出情緒值時呼叫
+		//emotion參數: int 情緒代碼
+		//ExternalInterface.call("Flash_onLoading", 1);
+		//
+		//Flash_onFinish()
+		//當已進入到結果畫面時呼叫
+		//ExternalInterface.call("Flash_onFinish");
+
 	}
 
 }
