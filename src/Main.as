@@ -21,7 +21,7 @@ package
 		
 		private var myArray:Array = [0];
 		private var arrBar:Array;
-				
+		
 		public function Main()
 		{
 			if (stage) init();
@@ -38,19 +38,20 @@ package
 			{
 				var bar:Bar = new Bar();
 				bar.id = i;
-				bar.x = (rect_w+5) * i;
+				bar.x = (rect_w + 5) * i;
 				arrBar.push(bar);
 				addChild(bar);
 			}
-			
+		
 		}
-				
+		
 		public function draw():void
 		{
 			
 			if (t % BAR_FPS == 1)
 			{
-				for (var i:int = 0; i < arrBar.length; i++) {
+				for (var i:int = 0; i < arrBar.length; i++)
+				{
 					arrBar[i].to = random(1, 25);
 				}
 			}
@@ -95,14 +96,14 @@ class Bar extends F5MovieClip2D
 		// 無線條
 		this.noStroke()
 		this.colorMode(HSV, n, 1, n);
-
+	
 	}
 	
 	public function drawingBar(n:int):void
 	{
 		//trace("drawingBar:" + n);
 		
-		this.translate(900, stage_height*0.5);
+		this.translate(900, stage_height * 0.5);
 		
 		for (var i:int = 0; i <= c; i++)
 		{
@@ -110,50 +111,53 @@ class Bar extends F5MovieClip2D
 			{
 				// 填色
 				//fill(_id, 1, j);
-				fill(_id, 1, j*1.5);
-				
+				fill(_id, 1, j * 1.5);
 				
 				// 畫方格
 				var cx:Number = (rect_w + 2) * i;
 				var cy:Number = bar_h - (rect_h + 2) * j;
 				rect(cx, cy, rect_w, rect_h);
-
-				// 畫圓
-				//var cx:Number = 33 + 40 * i;
-				//var cy:Number = 33 + 40 * j;
-				//circle( cx, cy, 19 );
+				
+					// 畫圓
+					//var cx:Number = 33 + 40 * i;
+					//var cy:Number = 33 + 40 * j;
+					//circle( cx, cy, 19 );
 			}
 		}
 	}
 	
-	public function draw():void {
-		if (_n > _to) {
+	public function draw():void
+	{
+		if (_n > _to)
+		{
 			_n = _n - 1;
 		}
-		if (_n < _to) {
+		if (_n < _to)
+		{
 			_n = _n + 1;
 		}
 		drawingBar(n);
 	}
 	
-	public function get n():int 
+	public function get n():int
 	{
 		return _n;
 	}
 	
-	public function set n(value:int):void 
+	public function set n(value:int):void
 	{
 		_n = value;
 	}
 	
-	public function set id(value:int):void 
+	public function set id(value:int):void
 	{
 		_id = value;
 	}
 	
-	public function set to(value:int):void 
+	public function set to(value:int):void
 	{
 		_to = value;
 	}
 
 }
+
