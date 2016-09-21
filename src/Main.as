@@ -61,7 +61,7 @@ package
 				for (var i:int = 0; i < arrBar.length; i++)
 				{
 					arrBar[i].to = random(1, 25);
-					//arrBar[i].to = eegArray.shift()[i];
+						//arrBar[i].to = eegArray.shift()[i];
 				}
 			}
 			t = t + 1;
@@ -98,7 +98,7 @@ package
 				}
 			}
 		}
-
+		
 		private function initExternalInterface():void
 		{
 			tm = new Timer(100);
@@ -126,42 +126,42 @@ package
 		//
 		//showFinish()
 		//在主遊戲畫面顯示結果畫面
-		private function fromJs_showFinish():void 
+		private function fromJs_showFinish():void
 		{
-			
+		
 		}
-
+		
 		//showLoading()
 		//在主遊戲畫面顯示Loading, 並計算情緒代碼
-		private function fromJs_showLoading():void 
+		private function fromJs_showLoading():void
 		{
-			
+		
 		}
-	
+		
 		//start(no)
 		//由待機畫面進場到主遊戲畫面
 		//no參數: int : 體驗編號
-		private function fromJs_start(__no:int):void 
+		private function fromJs_start(__no:int):void
 		{
-			
+		
 		}
 		
 		//setAttention(attention)
 		//設定專注度
 		//attention參數值的範圍: 0~100
-		private function fromJs_setAttention(__attention:int):void 
+		private function fromJs_setAttention(__attention:int):void
 		{
-			
+		
 		}
 		
 		//setEEG(delta, theta, lowAlpha, highAlpha, lowBeta, highBeta, lowGamma, highGamma)
 		//設定腦波值
 		//每個參數值的範圍: 0~16777215(0xFFFFFF 3Byte的長整數)
-		private function fromJs_setEEG(__delta:int, __theta:int, __lowAlpha:int, __highAlpha:int, __lowBeta:int, __highBeta:int, __lowGamma:int, __highGamma:int):void 
+		private function fromJs_setEEG(__delta:int, __theta:int, __lowAlpha:int, __highAlpha:int, __lowBeta:int, __highBeta:int, __lowGamma:int, __highGamma:int):void
 		{
-			eegArray.push([__delta,__theta,__lowAlpha,__highAlpha,__lowBeta,__highBeta,__lowGamma,__highGamma]);
+			eegArray.push([__delta, __theta, __lowAlpha, __highAlpha, __lowBeta, __highBeta, __lowGamma, __highGamma]);
 		}
-		
+	
 		//
 		// flash call javascript
 		//
@@ -181,7 +181,7 @@ package
 		//Flash_onFinish()
 		//當已進入到結果畫面時呼叫
 		//ExternalInterface.call("Flash_onFinish");
-
+	
 	}
 
 }
@@ -215,7 +215,7 @@ class Bar extends F5MovieClip2D
 	{
 		//trace("drawingBar:" + n);
 		
-		translate(900, stage_height * 0.5);
+		//translate(900, stage_height * 0.5);
 		
 		for (var i:int = 0; i <= c; i++)
 		{
@@ -273,11 +273,13 @@ class Bar extends F5MovieClip2D
 
 }
 
+//import frocessing.display.F5MovieClip2DBmp;
+
 class Wave extends F5MovieClip2D
 {
 	private var stage_width:Number = 360;
 	private var stage_height:Number = 360;
-	private var n:int = 16;
+	private var n:int = 8;
 	private var t:Number = 0;
 	
 	public function Wave()
@@ -288,6 +290,7 @@ class Wave extends F5MovieClip2D
 	public function setup():void
 	{
 		size(stage_width, stage_height);
+		//background(0);
 		noFill();
 		colorMode(HSV, 2, 1, 1);
 		strokeWeight(2);
@@ -295,17 +298,20 @@ class Wave extends F5MovieClip2D
 	
 	public function draw():void
 	{
-		translate(897, 500);
+		//background(0, 0);
+		
+		translate(0, 150);
+		//translate(897, 500);
 		
 		//stroke(t, 1, 0.75, 0.2);
-		stroke(t, 1, 0.75, .9);
+		stroke(t, 1, 0.75, .8);
 		beginShape();
 		
 		curveVertex(-100, 0);
 		for (var i:int = 0; i <= n; i++)
 		{
 			var xx:Number = i * stage_width / n;
-			var yy:Number = noise(i * 0.25, t) * 100 - 50;
+			var yy:Number = noise(i * 0.5, t) * 100 - 50;
 			curveVertex(xx, yy);
 		}
 		curveVertex(stage_width + 100, 0);
