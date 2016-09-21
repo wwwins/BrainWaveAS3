@@ -3,8 +3,6 @@ package
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import frocessing.display.*;
-	import com.greensock.*; 
-	import com.greensock.easing.*;
 	
 	/**
 	 * ...
@@ -12,6 +10,8 @@ package
 	 */
 	public class Main extends F5MovieClip2D
 	{
+		public static const BAR_FPS:int = 10;
+		
 		//private var stage_width:Number = stage.stageWidth;
 		//private var stage_height:Number = stage.stageHeight;
 		private var rect_w:Number = 40;
@@ -20,7 +20,7 @@ package
 		private var t:Number = 0;
 		
 		private var myArray:Array = [0];
-		private var arrMc:Array;
+		private var arrBar:Array;
 				
 		public function Main()
 		{
@@ -33,28 +33,25 @@ package
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 			// entry point
 			
-			arrMc = [];
+			arrBar = [];
 			for (var i:int = 0; i <= c; i++)
 			{
 				var bar:Bar = new Bar();
 				bar.id = i;
 				bar.x = (rect_w+5) * i;
-				arrMc.push(bar);
+				arrBar.push(bar);
 				addChild(bar);
 			}
-			
-			myArray = [0, 0, 0, 0, 0, 0, 0, 0];
-			TweenMax.to( myArray, 1, { endArray:[25,25,25,25,25,25,25,25] } );
 			
 		}
 				
 		public function draw():void
 		{
-			if (t % 2 == 1)
+			
+			if (t % BAR_FPS == 1)
 			{
-				for (var i:int = 0; i < arrMc.length; i++) {
-					//arrMc[i].n = random(1, 25);
-					arrMc[i].n = int(myArray[i]);
+				for (var i:int = 0; i < arrBar.length; i++) {
+					arrBar[i].to = random(1, 25);
 				}
 			}
 			t = t + 1;
@@ -84,6 +81,7 @@ class Bar extends F5MovieClip2D
 	private var stage_height:Number = 720;
 	private var _id:int = 0;
 	private var _n:int = 25;
+	private var _to:int = 0;
 	private var c:int = 0;
 	private var t:Number = 0;
 	private var rect_w:Number = 40;
@@ -98,20 +96,22 @@ class Bar extends F5MovieClip2D
 		this.noStroke()
 		this.colorMode(HSV, n, 1, n);
 
-		//this.translate(100, 100);
-		
 	}
 	
 	public function drawingBar(n:int):void
 	{
 		//trace("drawingBar:" + n);
 		
+		this.translate(900, stage_height*0.5);
+		
 		for (var i:int = 0; i <= c; i++)
 		{
 			for (var j:int = 0; j <= n; j++)
 			{
 				// 填色
-				fill(_id, 1, j);
+				//fill(_id, 1, j);
+				fill(_id, 1, j*1.5);
+				
 				
 				// 畫方格
 				var cx:Number = (rect_w + 2) * i;
@@ -127,6 +127,12 @@ class Bar extends F5MovieClip2D
 	}
 	
 	public function draw():void {
+		if (_n > _to) {
+			_n = _n - 1;
+		}
+		if (_n < _to) {
+			_n = _n + 1;
+		}
 		drawingBar(n);
 	}
 	
@@ -143,6 +149,11 @@ class Bar extends F5MovieClip2D
 	public function set id(value:int):void 
 	{
 		_id = value;
+	}
+	
+	public function set to(value:int):void 
+	{
+		_to = value;
 	}
 
 }
