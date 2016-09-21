@@ -42,7 +42,9 @@ package
 				arrBar.push(bar);
 				addChild(bar);
 			}
-		
+			
+			var wave:Wave = new Wave();
+			addChild(wave);
 		}
 		
 		public function draw():void
@@ -94,8 +96,8 @@ class Bar extends F5MovieClip2D
 		super(useStageEvent);
 		
 		// 無線條
-		this.noStroke()
-		this.colorMode(HSV, n, 1, n);
+		noStroke()
+		colorMode(HSV, n, 1, n);
 	
 	}
 	
@@ -103,7 +105,7 @@ class Bar extends F5MovieClip2D
 	{
 		//trace("drawingBar:" + n);
 		
-		this.translate(900, stage_height * 0.5);
+		translate(900, stage_height * 0.5);
 		
 		for (var i:int = 0; i <= c; i++)
 		{
@@ -161,3 +163,45 @@ class Bar extends F5MovieClip2D
 
 }
 
+class Wave extends F5MovieClip2D
+{
+	private var stage_width:Number = 360;
+	private var stage_height:Number = 360;
+	private var n:int = 16;
+	private var t:Number = 0;
+	
+	public function Wave()
+	{
+		super();
+	}
+	
+	public function setup():void
+	{
+		size(stage_width, stage_height);
+		noFill();
+		colorMode(HSV, 2, 1, 1);
+		strokeWeight(2);
+	}
+	
+	public function draw():void
+	{
+		translate(897, 500);
+		
+		//stroke(t, 1, 0.75, 0.2);
+		stroke(t, 1, 0.75, .9);
+		beginShape();
+		
+		curveVertex(-100, 0);
+		for (var i:int = 0; i <= n; i++)
+		{
+			var xx:Number = i * stage_width / n;
+			var yy:Number = noise(i * 0.25, t) * 100 - 50;
+			curveVertex(xx, yy);
+		}
+		curveVertex(stage_width + 100, 0);
+		
+		endShape();
+		
+		t += 0.01;
+	}
+}
