@@ -80,7 +80,11 @@ package
 		{
 			this.removeChildAt(this.numChildren - 1);
 			
-			setupFrocessing();
+			//setupFrocessing();
+			var page:MovieClip = new MainPage();
+			page.x = (stage_width - page.width) * .5;
+			page.y = (stage_height - page.height) * .5;
+			addChild(page);
 			status = PAGE_MAIN;
 		}
 		
