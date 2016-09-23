@@ -47,6 +47,9 @@ package
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 			// entry point
 			
+			eegArray = [];
+			attentionArray = [];
+
 			initExternalInterface();
 			setupStandByFrame();
 		}
@@ -115,8 +118,6 @@ package
 		
 		private function setupFrocessing():void
 		{
-			eegArray = [];
-			attentionArray = [];
 			arrBar = [];
 			for (var i:int = 0; i <= c; i++)
 			{
