@@ -1,5 +1,6 @@
 package
 {
+	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.TimerEvent;
@@ -8,22 +9,30 @@ package
 	import frocessing.display.*;
 	
 	/**
-	 * ...
+	 * Philips Brain Wave Project
 	 * @author isobar
 	 */
 	public class Main extends F5MovieClip2D
 	{
 		public static const BAR_FPS:int = 10;
 		
-		//private var stage_width:Number = stage.stageWidth;
-		//private var stage_height:Number = stage.stageHeight;
+		public static const PAGE_STAND_BY:int = 0;
+		public static const PAGE_START:int = 1;
+		public static const PAGE_MAIN:int = 2;
+		public static const PAGE_ANALYZING_EEG:int = 3;
+		public static const PAGE_FINISH:int = 4;
+		
+		private var stage_width:Number = stage.stageWidth;
+		private var stage_height:Number = stage.stageHeight;
 		private var rect_w:Number = 40;
 		private var rect_h:Number = 10;
 		private var c:int = 7;
 		private var t:Number = 0;
-		
+		private var status:int = 0;
 		private var eegArray:Array;
+		private var attentionArray:Array;
 		private var arrBar:Array;
+		private var userId:int = 0;
 		
 		private var tm:Timer;
 		
@@ -38,7 +47,72 @@ package
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 			// entry point
 			
+			initExternalInterface();
+			setupStandByFrame();
+		}
+		
+		// 進入待機畫面
+		private function setupStandByFrame():void
+		{
+			var page:MovieClip = new StandBy();
+			page.x = (stage_width - page.width) * .5;
+			page.y = (stage_height - page.height) * .5;
+			addChild(page);
+			status = PAGE_STAND_BY;
+		
+		}
+		
+		// 進入遊戲 intro 畫面
+		private function setupStartFrame():void
+		{
+			this.removeChildAt(this.numChildren - 1);
+			
+			var page:MovieClip = new StartPage();
+			page.x = (stage_width - page.width) * .5;
+			page.y = (stage_height - page.height) * .5;
+			addChild(page);
+			status = PAGE_START;
+		
+		}
+		
+		// 遊戲主畫面
+		private function setupMainFrame():void
+		{
+			this.removeChildAt(this.numChildren - 1);
+			
+			setupFrocessing();
+			status = PAGE_MAIN;
+		}
+		
+		// 計算情緒代碼，顯示 Loading
+		private function setupAnalyzingEEGFrame():void
+		{
+			this.removeChildAt(this.numChildren - 1);
+			
+			var page:MovieClip = new AnalyzingEEG();
+			page.x = (stage_width - page.width) * .5;
+			page.y = (stage_height - page.height) * .5;
+			addChild(page);
+			status = PAGE_ANALYZING_EEG;
+		
+		}
+		
+		// 結果畫面
+		private function setupFinishFrame(__gender:String, __age:String):void
+		{
+			this.removeChildAt(this.numChildren - 1);
+			
+			var page:MovieClip = new Finish();
+			page.x = (stage_width - page.width) * .5;
+			page.y = (stage_height - page.height) * .5;
+			addChild(page);
+			status = PAGE_FINISH;
+		}
+		
+		private function setupFrocessing():void
+		{
 			eegArray = [];
+			attentionArray = [];
 			arrBar = [];
 			for (var i:int = 0; i <= c; i++)
 			{
@@ -51,25 +125,52 @@ package
 			
 			var wave:Wave = new Wave();
 			addChild(wave);
+		
 		}
 		
 		public function draw():void
 		{
-			
-			if (t % BAR_FPS == 1)
+			if (status == PAGE_MAIN)
 			{
-				for (var i:int = 0; i < arrBar.length; i++)
+				if (t % BAR_FPS == 1)
 				{
-					arrBar[i].to = random(1, 25);
-						//arrBar[i].to = eegArray.shift()[i];
+					for (var i:int = 0; i < arrBar.length; i++)
+					{
+						arrBar[i].to = random(1, 25);
+							//arrBar[i].to = eegArray.shift()[i];
+					}
 				}
+				t = t + 1;
 			}
-			t = t + 1;
 		}
 		
 		public function mousePressed():void
 		{
 			trace("mousePressed");
+			if (status == PAGE_STAND_BY)
+			{
+				trace("Flash_onReady");
+				if (ExternalInterface.available) ExternalInterface.call("Flash_onReady");
+			}
+			if (status == PAGE_START)
+			{
+				trace("Flash_onStarted");
+				if (ExternalInterface.available) ExternalInterface.call("Flash_onStarted");
+			}
+			if (status == PAGE_MAIN)
+			{
+				
+			}
+			if (status == PAGE_ANALYZING_EEG)
+			{
+				trace("Flash_onLoading");
+				if (ExternalInterface.available) ExternalInterface.call("Flash_onLoading", 1);
+			}
+			if (status == PAGE_FINISH)
+			{
+				trace("Flash_onFinish");
+				if (ExternalInterface.available) ExternalInterface.call("Flash_onFinish");
+			}
 			noLoop();
 		}
 		
@@ -126,16 +227,18 @@ package
 		//
 		//showFinish()
 		//在主遊戲畫面顯示結果畫面
-		private function fromJs_showFinish():void
+		//gender: string (男, 女)
+		//age: string (年齡區間: 內容還未定)
+		private function fromJs_showFinish(__gender:String, __age:String):void
 		{
-		
+			setupFinishFrame(__gender, __age);
 		}
 		
 		//showLoading()
 		//在主遊戲畫面顯示Loading, 並計算情緒代碼
 		private function fromJs_showLoading():void
 		{
-		
+			setupAnalyzingEEGFrame();
 		}
 		
 		//start(no)
@@ -143,7 +246,8 @@ package
 		//no參數: int : 體驗編號
 		private function fromJs_start(__no:int):void
 		{
-		
+			userId = __no;
+			setupStartFrame();
 		}
 		
 		//setAttention(attention)
@@ -151,7 +255,7 @@ package
 		//attention參數值的範圍: 0~100
 		private function fromJs_setAttention(__attention:int):void
 		{
-		
+			attentionArray.push(__attention);
 		}
 		
 		//setEEG(delta, theta, lowAlpha, highAlpha, lowBeta, highBeta, lowGamma, highGamma)
