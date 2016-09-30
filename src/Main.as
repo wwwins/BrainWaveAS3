@@ -7,6 +7,7 @@ package
 	import flash.external.ExternalInterface;
 	import flash.utils.Timer;
 	import frocessing.display.*;
+	import com.greensock.TweenMax;
 	
 	/**
 	 * Philips Brain Wave Project
@@ -21,6 +22,7 @@ package
 		public static const PAGE_MAIN:int = 2;
 		public static const PAGE_ANALYZING_EEG:int = 3;
 		public static const PAGE_FINISH:int = 4;
+		public static const PAGE_END:int = 5;
 		
 		private var stage_width:Number = stage.stageWidth;
 		private var stage_height:Number = stage.stageHeight;
@@ -119,6 +121,23 @@ package
 			page.y = (stage_height - page.height) * .5;
 			addChild(page);
 			status = PAGE_FINISH;
+			
+			TweenMax.delayedCall(20, function():void
+			{
+				setupEnding();
+			});
+		}
+		
+		// ENDING
+		private function setupEnding():void
+		{
+			this.removeChildAt(this.numChildren - 1);
+			
+			var page:MovieClip = new Ending();
+			page.x = (stage_width - page.width) * .5;
+			page.y = (stage_height - page.height) * .5;
+			addChild(page);
+			status = PAGE_END;
 		}
 		
 		private function setupFrocessing():void
