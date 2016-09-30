@@ -49,9 +49,14 @@ package
 			
 			eegArray = [];
 			attentionArray = [];
-
+			
 			initExternalInterface();
 			setupStandByFrame();
+			
+			// for demo
+			status = PAGE_MAIN;
+			setupFrocessing();
+			// for demo
 		}
 		
 		// 進入待機畫面
@@ -427,6 +432,6 @@ class Wave extends F5MovieClip2D
 		
 		endShape();
 		
-		t += 0.01;
+		t += 0.02;
 	}
 }
