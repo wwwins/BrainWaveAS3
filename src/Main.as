@@ -152,7 +152,9 @@ package
 				addChild(bar);
 			}
 			
-			var wave:SineWave = new SineWave();
+			//var wave:Wave = new Wave();
+			var wave:HeartBeatWave = new HeartBeatWave();
+			//var wave:SineWave = new SineWave();
 			addChild(wave);
 		
 		}
@@ -457,7 +459,7 @@ class Wave extends F5MovieClip2D
 
 import frocessing.display.F5MovieClip2DBmp;
 
-class SineWave extends F5MovieClip2DBmp
+class HeartBeatWave extends F5MovieClip2DBmp
 {
 	private var stage_width:Number = 360;
 	private var stage_height:Number = 360;
@@ -470,7 +472,7 @@ class SineWave extends F5MovieClip2DBmp
 	private var sy:Number = 0;
 	private var t:Number = 0;
 	
-	public function SineWave()
+	public function HeartBeatWave()
 	{
 		super();
 	}
@@ -498,6 +500,64 @@ class SineWave extends F5MovieClip2DBmp
 			background(0, 0);
 			rand = random(1200, 800);
 			sx = 0;
+		}
+	}
+
+}
+
+class SineWave extends F5MovieClip2D
+{
+	private var stage_width:Number = 360;
+	private var stage_height:Number = 360;
+	private var w:Number = 0;
+	private var xspacing:int = 1;
+	private var theta:Number = 0;
+	private var amplitude:Number = 80;
+	private var period:Number = 500;
+	private var dx:Number;
+	private var yvalues:Array;
+	private var maxwaves:int = 8;
+	
+	public function SineWave()
+	{
+		super();
+	}
+	
+	public function setup():void
+	{
+		size(stage_width, stage_height);
+		w = stage_width + xspacing;
+		dx = (2 * Math.PI / period) * xspacing;
+		var idx:int = int(w / xspacing)
+		yvalues = new Array(idx);
+	
+	}
+	
+	public function draw():void
+	{
+		translate(0, 150);
+		stroke(255);
+		calcWave();
+		renderWave();
+	}
+	
+	private function renderWave():void
+	{
+		for (var i:int = 0; i < yvalues.length; i++)
+		{
+			point(i * xspacing, amplitude * 0.5 + yvalues[i]);
+		}
+	}
+	
+	private function calcWave():void
+	{
+		theta = theta + 0.1;
+		var xx:Number = theta;
+		for (var i:int = 0; i < yvalues.length; i++)
+		{
+			yvalues[i] = sin(xx) * amplitude;
+			//yvalues[i] = sin(xx * 0.5) * cos(1000 / xx) * 2 * sin(xx) * cos(xx) * amplitude;
+			xx = xx + dx;
 		}
 	}
 
