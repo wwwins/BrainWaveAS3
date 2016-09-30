@@ -133,7 +133,7 @@ package
 				addChild(bar);
 			}
 			
-			var wave:Wave = new Wave();
+			var wave:SineWave = new SineWave();
 			addChild(wave);
 		
 		}
@@ -434,4 +434,52 @@ class Wave extends F5MovieClip2D
 		
 		t += 0.02;
 	}
+}
+
+import frocessing.display.F5MovieClip2DBmp;
+
+class SineWave extends F5MovieClip2DBmp
+{
+	private var stage_width:Number = 360;
+	private var stage_height:Number = 360;
+	private var amplitude:Number = 100;
+	private var xspacing:Number = 0;
+	private var rand:Number = 1000;
+	private var sx0:Number = 0;
+	private var sy0:Number = 0;
+	private var sx:Number = 0;
+	private var sy:Number = 0;
+	private var t:Number = 0;
+	
+	public function SineWave()
+	{
+		super();
+	}
+	
+	public function setup():void
+	{
+		size(stage_width, stage_height);
+		background(0, 0);
+		strokeWeight(2);
+		rand = random(1200, 800);
+	}
+	
+	public function draw():void
+	{
+		translate(0, 150);
+		stroke(255);
+		sx0 = sx;
+		sy0 = sy;
+		sx += 0.1;
+		//sy = sin(sx);
+		sy = sin(sx * 0.5) * cos(rand / sx) * 2 * sin(sx) * cos(sx);
+		line(sx0 * xspacing, sy0 * amplitude, sx * xspacing, sy * amplitude);
+		if (sx0 * xspacing > stage_width)
+		{
+			background(0, 0);
+			rand = random(1200, 800);
+			sx = 0;
+		}
+	}
+
 }
