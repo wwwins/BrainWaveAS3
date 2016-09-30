@@ -443,7 +443,7 @@ class SineWave extends F5MovieClip2DBmp
 	private var stage_width:Number = 360;
 	private var stage_height:Number = 360;
 	private var amplitude:Number = 100;
-	private var xspacing:Number = 0;
+	private var xspacing:Number = 20;
 	private var rand:Number = 1000;
 	private var sx0:Number = 0;
 	private var sy0:Number = 0;
