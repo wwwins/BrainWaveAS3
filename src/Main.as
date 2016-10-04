@@ -181,6 +181,7 @@ package
 				bar.id = i;
 				bar.x = (rect_w + 5) * i;
 				arrBar.push(bar);
+				TweenMax.from(bar, .25, {alpha:0});
 				addChild(bar);
 			}
 			
