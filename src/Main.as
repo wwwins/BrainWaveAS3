@@ -201,9 +201,9 @@ package
 		private function handleEEGData():int
 		{
 			trace("emotionArray:" + emotionArray);
-			var maxValue=0;
-			var maxIndex=0;
-			for (var i in emotionArray) {
+			var maxValue:int=0;
+			var maxIndex:int=0;
+			for (var i:int in emotionArray) {
 				if (emotionArray[i] > maxValue) {
 					maxValue = emotionArray[i];
 					maxIndex = i;
@@ -347,7 +347,7 @@ package
 		private function fromJs_showLoading():void
 		{
 			//setupAnalyzingEEGFrame();
-			var idx = handleEEGData();
+			var idx:int = handleEEGData();
 			if (ExternalInterface.available) ExternalInterface.call("Flash_onLoading", emotionTxtArray[idx]);
 		}
 		
