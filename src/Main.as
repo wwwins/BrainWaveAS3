@@ -5,6 +5,10 @@ package
 	import flash.events.Event;
 	import flash.events.TimerEvent;
 	import flash.external.ExternalInterface;
+	import flash.text.AntiAliasType;
+	import flash.text.TextField;
+	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFormat;
 	import flash.utils.Timer;
 	import frocessing.display.*;
 	import com.greensock.TweenMax;
@@ -194,7 +198,46 @@ package
 			var wave:SineWave = new SineWave();
 			arrWave.push(wave);
 			addChild(wave);
-		
+
+			var format:TextFormat = new TextFormat();
+			format.color = 0xFFFFFF;
+			format.size = 12;
+			format.font = "Arial";
+
+			for (i = 0; i <= c; i++) {
+				var myText:TextField = new TextField();
+				//myText.embedFonts = true;
+				myText.autoSize = TextFieldAutoSize.LEFT;
+				myText.antiAliasType = AntiAliasType.NORMAL;
+				myText.defaultTextFormat = format;
+				myText.selectable = false;
+				myText.mouseEnabled = false;
+				if (i == 0) {
+					myText.text = "0Hz";
+				}
+				if (i > 0 && i < 3) {
+					myText.visible = false;
+				}
+				if (i == 3) {
+					myText.text = "10Hz";
+				}
+				if (i == 4) {
+					myText.text = "20Hz";
+				}
+				if (i == 5) {
+					myText.text = "30Hz";
+				}
+				if (i == 6) {
+					myText.text = "40Hz";
+				}
+				if (i == 7) {
+					myText.text = "50Hz";
+				}
+				myText.x = stage_width - 320 + (rect_w + 5) * i;
+				myText.y = stage_height - 20;
+				addChild(myText);
+			}
+
 			status = PAGE_FROCESSING;
 		}
 		
