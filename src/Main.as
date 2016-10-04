@@ -202,8 +202,8 @@ package
 		{
 			trace("emotionArray:" + emotionArray);
 			var maxValue:int=0;
-			var maxIndex:int=0;
-			for (var i:int in emotionArray) {
+			var maxIndex:int = 0;
+			for (var i:int = 0; i < emotionArray.length; i++) {
 				if (emotionArray[i] > maxValue) {
 					maxValue = emotionArray[i];
 					maxIndex = i;
