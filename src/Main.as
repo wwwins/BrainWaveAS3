@@ -34,6 +34,8 @@ package
 		private var status:int = 0;
 		private var eegArray:Array;
 		private var attentionArray:Array;
+		private var emotionArray:Array;
+		private var emotionTxtArray:Array;
 		private var arrBar:Array;
 		private var arrWave:Array;
 		private var userId:int = 0;
@@ -57,6 +59,8 @@ package
 			
 			eegArray = [];
 			attentionArray = [];
+			emotionArray = [0, 0, 0, 0];
+			emotionTxtArray = ['樂天型', '壓力型', '多慮型', '淡定型'];;
 			
 			initExternalInterface();
 			setupStandByFrame();
@@ -194,6 +198,20 @@ package
 			status = PAGE_FROCESSING;
 		}
 		
+		private function handleEEGData():int
+		{
+			trace("emotionArray:" + emotionArray);
+			var maxValue=0;
+			var maxIndex=0;
+			for (var i in emotionArray) {
+				if (emotionArray[i] > maxValue) {
+					maxValue = emotionArray[i];
+					maxIndex = i;
+				}
+			}
+			return maxIndex;
+		}
+		
 		public function stopDrawingChart():void
 		{
 			for (var i:int = 0; i < arrBar.length; i++)
@@ -227,6 +245,7 @@ package
 		public function mousePressed():void
 		{
 			trace("mousePressed:" + status);
+			//////////////////////////////
 			// demo code
 			if (status == PAGE_STAND_BY)
 			{
@@ -258,6 +277,7 @@ package
 				if (ExternalInterface.available) ExternalInterface.call("Flash_onFinish");
 			}
 			// demo code
+			//////////////////////////////
 			noLoop();
 		}
 		
@@ -319,13 +339,16 @@ package
 		private function fromJs_showFinish(__gender:String, __age:String):void
 		{
 			setupFinishFrame(__gender, __age);
+			if (ExternalInterface.available) ExternalInterface.call("Flash_onFinish");
 		}
 		
 		//showLoading()
 		//在主遊戲畫面顯示Loading, 並計算情緒代碼
 		private function fromJs_showLoading():void
 		{
-			setupAnalyzingEEGFrame();
+			//setupAnalyzingEEGFrame();
+			var idx = handleEEGData();
+			if (ExternalInterface.available) ExternalInterface.call("Flash_onLoading", emotionTxtArray[idx]);
 		}
 		
 		//start(no)
@@ -351,6 +374,26 @@ package
 		private function fromJs_setEEG(__delta:int, __theta:int, __lowAlpha:int, __highAlpha:int, __lowBeta:int, __highBeta:int, __lowGamma:int, __highGamma:int):void
 		{
 			eegArray.push([__delta, __theta, __lowAlpha, __highAlpha, __lowBeta, __highBeta, __lowGamma, __highGamma]);
+			var alpha:Number = __lowAlpha + __highAlpha;
+			var beta:Number = __lowBeta + __highBeta;
+			var arousal:Number = beta / alpha;
+			var valence:Number = __lowAlpha / __lowBeta - __highAlpha / __highBeta;
+			// +,+:Happy(樂天型)
+			if (valence > 0 && arousal > 0) {
+				emotionArray[0] += 1;
+			}
+			// -,+:Angry(壓力型)
+			if (valence < 0 && arousal > 0) {
+				emotionArray[1] += 1;
+			}
+			// -,-:Sad(想太多型)
+			if (valence < 0 && arousal < 0) {
+				emotionArray[2] += 1;
+			}
+			// +,-:Relaxed(淡定型)
+			if (valence > 0 && arousal < 0) {
+				emotionArray[3] += 1;
+			}
 		}
 	
 		//
@@ -367,6 +410,7 @@ package
 		//Flash_onLoading(emotion)
 		//當已進入到Loading畫面, 並且計算出情緒值時呼叫
 		//emotion參數: int 情緒代碼
+		//Happy(樂天型)/Relaxed(淡定型)/Angry(壓力型)/Sad(想太多型)
 		//ExternalInterface.call("Flash_onLoading", 1);
 		//
 		//Flash_onFinish()
