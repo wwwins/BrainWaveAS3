@@ -20,23 +20,29 @@ package
 		public static const PAGE_STAND_BY:int = 0;
 		public static const PAGE_START:int = 1;
 		public static const PAGE_MAIN:int = 2;
-		public static const PAGE_ANALYZING_EEG:int = 3;
-		public static const PAGE_FINISH:int = 4;
-		public static const PAGE_END:int = 5;
+		public static const PAGE_FROCESSING:int = 3;
+		public static const PAGE_ANALYZING_EEG:int = 4;
+		public static const PAGE_FINISH:int = 5;
+		public static const PAGE_END:int = 6;
 		
 		private var stage_width:Number = stage.stageWidth;
 		private var stage_height:Number = stage.stageHeight;
-		private var rect_w:Number = 40;
-		private var rect_h:Number = 10;
+		private var rect_w:Number = 30;
+		private var rect_h:Number = 5;
 		private var c:int = 7;
 		private var t:Number = 0;
 		private var status:int = 0;
 		private var eegArray:Array;
 		private var attentionArray:Array;
 		private var arrBar:Array;
+		private var arrWave:Array;
 		private var userId:int = 0;
 		
 		private var tm:Timer;
+		
+		private var black:Black;
+		
+		private var startPage:StartPage;
 		
 		public function Main()
 		{
@@ -56,8 +62,8 @@ package
 			setupStandByFrame();
 			
 			// for demo
-			status = PAGE_MAIN;
-			setupFrocessing();
+			//status = PAGE_MAIN;
+			//setupFrocessing();
 			// for demo
 		}
 		
@@ -68,44 +74,64 @@ package
 			page.x = (stage_width - page.width) * .5;
 			page.y = (stage_height - page.height) * .5;
 			addChild(page);
-			status = PAGE_STAND_BY;
 		
+			black = new Black();
+			black.alpha = 0;
+			addChild(black);
+			
+			status = PAGE_STAND_BY;
+		}
+		
+		private function startFrameFadeIn():void 
+		{
+			TweenMax.to(black, .25, {alpha:1, onComplete:function():void { setupStartFrame(); }});
+			TweenMax.delayedCall(27.0, function():void {setupFrocessing(); });
 		}
 		
 		// 進入遊戲 intro 畫面
 		private function setupStartFrame():void
 		{
-			this.removeChildAt(this.numChildren - 1);
+			//this.removeChildAt(this.numChildren - 1);
 			
-			var page:MovieClip = new StartPage();
-			page.x = (stage_width - page.width) * .5;
-			page.y = (stage_height - page.height) * .5;
-			addChild(page);
+			startPage = new StartPage();
+			startPage.x = 168;
+			startPage.y = -22;
+			this.addChild(startPage);
+			
 			status = PAGE_START;
 		
+			setupMainFrame();
 		}
 		
 		// 遊戲主畫面
 		private function setupMainFrame():void
 		{
-			this.removeChildAt(this.numChildren - 1);
+			//this.removeChildAt(this.numChildren - 1);
 			
 			//setupFrocessing();
-			var page:MovieClip = new MainPage();
-			page.x = (stage_width - page.width) * .5;
-			page.y = (stage_height - page.height) * .5;
-			addChild(page);
+			//var page:MovieClip = new MainPage();
+			//page.x = (stage_width - page.width) * .5;
+			//page.y = (stage_height - page.height) * .5;
+			//addChild(page);
+			
+			TweenMax.delayedCall(40.5, function():void
+			{
+				setupAnalyzingEEGFrame();
+			});
+
 			status = PAGE_MAIN;
 		}
 		
-		// 計算情緒代碼，顯示 Loading
+		// 計算情緒代碼，顯示"腦波分析中"
 		private function setupAnalyzingEEGFrame():void
 		{
-			this.removeChildAt(this.numChildren - 1);
+			this.removeChild(black);
+			
+			//this.removeChildAt(this.numChildren - 1);
 			
 			var page:MovieClip = new AnalyzingEEG();
-			page.x = (stage_width - page.width) * .5;
-			page.y = (stage_height - page.height) * .5;
+			page.x = 507;
+			page.y = 322;
 			addChild(page);
 			status = PAGE_ANALYZING_EEG;
 		
@@ -117,10 +143,13 @@ package
 			this.removeChildAt(this.numChildren - 1);
 			
 			var page:MovieClip = new Finish();
-			page.x = (stage_width - page.width) * .5;
-			page.y = (stage_height - page.height) * .5;
+			page.x = 397;
+			page.y = 302;
 			addChild(page);
 			status = PAGE_FINISH;
+			
+			startPage.stop();
+			stopDrawingChart();
 			
 			TweenMax.delayedCall(20, function():void
 			{
@@ -131,7 +160,9 @@ package
 		// ENDING
 		private function setupEnding():void
 		{
-			this.removeChildAt(this.numChildren - 1);
+			while (this.numChildren) {
+				this.removeChildAt(0);
+			}
 			
 			var page:MovieClip = new Ending();
 			page.x = (stage_width - page.width) * .5;
@@ -142,6 +173,7 @@ package
 		
 		private function setupFrocessing():void
 		{
+			arrWave = [];
 			arrBar = [];
 			for (var i:int = 0; i <= c; i++)
 			{
@@ -153,35 +185,54 @@ package
 			}
 			
 			//var wave:Wave = new Wave();
-			var wave:HeartBeatWave = new HeartBeatWave();
-			//var wave:SineWave = new SineWave();
+			//var wave:HeartBeatWave = new HeartBeatWave();
+			var wave:SineWave = new SineWave();
+			arrWave.push(wave);
 			addChild(wave);
 		
+			status = PAGE_FROCESSING;
 		}
 		
+		public function stopDrawingChart():void
+		{
+			for (var i:int = 0; i < arrBar.length; i++)
+			{
+				arrBar[i].noLoop();
+			}
+			arrWave[0].noLoop();
+
+		}
+
 		public function draw():void
 		{
-			if (status == PAGE_MAIN)
+			if (status > PAGE_MAIN)
 			{
 				if (t % BAR_FPS == 1)
 				{
 					for (var i:int = 0; i < arrBar.length; i++)
 					{
 						arrBar[i].to = random(1, 25);
-							//arrBar[i].to = eegArray.shift()[i];
+						//arrBar[i].to = eegArray.shift()[i];
 					}
 				}
 				t = t + 1;
+			}
+			if (status > PAGE_FINISH) {
+				trace("PAGE_FINISH");
+				noLoop();
 			}
 		}
 		
 		public function mousePressed():void
 		{
-			trace("mousePressed");
+			trace("mousePressed:" + status);
+			// demo code
 			if (status == PAGE_STAND_BY)
 			{
 				trace("Flash_onReady");
 				if (ExternalInterface.available) ExternalInterface.call("Flash_onReady");
+				//setupStartFrame();
+				startFrameFadeIn();
 			}
 			if (status == PAGE_START)
 			{
@@ -190,18 +241,22 @@ package
 			}
 			if (status == PAGE_MAIN)
 			{
-				
+			}
+			if (status == PAGE_FROCESSING)
+			{
 			}
 			if (status == PAGE_ANALYZING_EEG)
 			{
 				trace("Flash_onLoading");
 				if (ExternalInterface.available) ExternalInterface.call("Flash_onLoading", 1);
+				setupFinishFrame("女","18");
 			}
 			if (status == PAGE_FINISH)
 			{
 				trace("Flash_onFinish");
 				if (ExternalInterface.available) ExternalInterface.call("Flash_onFinish");
 			}
+			// demo code
 			noLoop();
 		}
 		
@@ -332,8 +387,8 @@ class Bar extends F5MovieClip2D
 	private var _to:int = 0;
 	private var c:int = 0;
 	private var t:Number = 0;
-	private var rect_w:Number = 40;
-	private var rect_h:Number = 10;
+	private var rect_w:Number = 30;
+	private var rect_h:Number = 5;
 	private var bar_h:Number = n * (rect_h + 2);
 	
 	public function Bar(useStageEvent:Boolean = true)
@@ -350,7 +405,7 @@ class Bar extends F5MovieClip2D
 	{
 		//trace("drawingBar:" + n);
 		
-		//translate(900, stage_height * 0.5);
+		translate(960, stage_height - 200);
 		
 		for (var i:int = 0; i <= c; i++)
 		{
@@ -412,7 +467,7 @@ class Bar extends F5MovieClip2D
 
 class Wave extends F5MovieClip2D
 {
-	private var stage_width:Number = 360;
+	private var stage_width:Number = 280;
 	private var stage_height:Number = 360;
 	private var n:int = 8;
 	private var t:Number = 0;
@@ -435,7 +490,8 @@ class Wave extends F5MovieClip2D
 	{
 		//background(0, 0);
 		
-		translate(0, 150);
+		translate(960 - 2, stage_height + 220);
+		//translate(0, 50);
 		//translate(897, 500);
 		
 		//stroke(t, 1, 0.75, 0.2);
@@ -461,9 +517,9 @@ import frocessing.display.F5MovieClip2DBmp;
 
 class HeartBeatWave extends F5MovieClip2DBmp
 {
-	private var stage_width:Number = 360;
+	private var stage_width:Number = 280;
 	private var stage_height:Number = 360;
-	private var amplitude:Number = 100;
+	private var amplitude:Number = 50;
 	private var xspacing:Number = 20;
 	private var rand:Number = 1000;
 	private var sx0:Number = 0;
@@ -487,7 +543,8 @@ class HeartBeatWave extends F5MovieClip2DBmp
 	
 	public function draw():void
 	{
-		translate(0, 150);
+		translate(960 - 2, stage_height + 220);
+		//translate(0, 50);
 		stroke(255);
 		sx0 = sx;
 		sy0 = sy;
@@ -507,12 +564,12 @@ class HeartBeatWave extends F5MovieClip2DBmp
 
 class SineWave extends F5MovieClip2D
 {
-	private var stage_width:Number = 360;
+	private var stage_width:Number = 280;
 	private var stage_height:Number = 360;
 	private var w:Number = 0;
 	private var xspacing:int = 1;
 	private var theta:Number = 0;
-	private var amplitude:Number = 80;
+	private var amplitude:Number = 50;
 	private var period:Number = 500;
 	private var dx:Number;
 	private var yvalues:Array;
@@ -535,7 +592,8 @@ class SineWave extends F5MovieClip2D
 	
 	public function draw():void
 	{
-		translate(0, 150);
+		translate(960 - 2, stage_height + 220);
+		//translate(0, 50);
 		stroke(255);
 		calcWave();
 		renderWave();
@@ -545,7 +603,7 @@ class SineWave extends F5MovieClip2D
 	{
 		for (var i:int = 0; i < yvalues.length; i++)
 		{
-			point(i * xspacing, amplitude * 0.5 + yvalues[i]);
+			point(i * xspacing, amplitude * yvalues[i]);
 		}
 	}
 	
@@ -555,8 +613,8 @@ class SineWave extends F5MovieClip2D
 		var xx:Number = theta;
 		for (var i:int = 0; i < yvalues.length; i++)
 		{
-			yvalues[i] = sin(xx) * amplitude;
-			//yvalues[i] = sin(xx * 0.5) * cos(1000 / xx) * 2 * sin(xx) * cos(xx) * amplitude;
+			//yvalues[i] = sin(xx) * amplitude;
+			yvalues[i] = sin(xx * 0.5) * cos(1000 / xx) * 2 * sin(xx) * cos(xx);
 			xx = xx + dx;
 		}
 	}
