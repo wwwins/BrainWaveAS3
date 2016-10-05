@@ -81,6 +81,26 @@ package
 			demoTm = new Timer(1000);
 			demoTm.addEventListener(TimerEvent.TIMER, demoTimerHandler);
 			demoTm.start();
+/*
+ * http://jsonviewer.stack.hu/
+{
+    "male": {
+		"text0": ["emotion0-1","emotion0-2","emotion0-3","emotion0-4"],
+		"text1": ["emotion1-1","emotion1-2","emotion1-3","emotion1-4"],
+		"text2": ["emotion2-1","emotion2-2","emotion2-3","emotion2-4"],
+		"text3": ["emotion3-1","emotion3-2","emotion3-3","emotion3-4"]
+    },
+	"female": {
+		"text0": ["emotion0-1","emotion0-2","emotion0-3","emotion0-4"],
+		"text1": ["emotion1-1","emotion1-2","emotion1-3","emotion1-4"],
+		"text2": ["emotion2-1","emotion2-2","emotion2-3","emotion2-4"],
+		"text3": ["emotion3-1","emotion3-2","emotion3-3","emotion3-4"]
+	}
+}
+*/
+			//var data:Object = JSON.parse('{"male":{"text0":["emotion0-1","emotion0-2","emotion0-3","emotion0-4"],"text1":["emotion1-1","emotion1-2","emotion1-3","emotion1-4"],"text2":["emotion2-1","emotion2-2","emotion2-3","emotion2-4"],"text3":["emotion3-1","emotion3-2","emotion3-3","emotion3-4"]},"female":{"text0":["emotion0-1","emotion0-2","emotion0-3","emotion0-4"],"text1":["emotion1-1","emotion1-2","emotion1-3","emotion1-4"],"text2":["emotion2-1","emotion2-2","emotion2-3","emotion2-4"],"text3":["emotion3-1","emotion3-2","emotion3-3","emotion3-4"]}}');
+			//trace("data:"+data.male.text0[1]);
+			
 			// demo code
 		}
 		
@@ -102,6 +122,7 @@ package
 			addChild(black);
 			
 			status = PAGE_STAND_BY;
+			
 		}
 		
 		private function startFrameFadeIn():void 
