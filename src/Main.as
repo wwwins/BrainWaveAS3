@@ -123,6 +123,7 @@ package
 			
 			status = PAGE_STAND_BY;
 			
+			if (ExternalInterface.available) ExternalInterface.call("Flash_onReady");
 		}
 		
 		private function startFrameFadeIn():void 
@@ -193,6 +194,9 @@ package
 		// 結果畫面
 		private function setupFinishFrame(__gender:String, __age:String):void
 		{
+			// demo code
+			//var idx:int = handleEEGData(); trace(emotionTxtArray[idx]);
+
 			this.removeChildAt(this.numChildren - 1);
 			
 			var page:MovieClip = new Finish();
@@ -212,8 +216,7 @@ package
 				setupEnding();
 			});
 			
-			// demo code
-			//var idx:int = handleEEGData(); trace(emotionTxtArray[idx]);
+			if (ExternalInterface.available) ExternalInterface.call("Flash_onFinish");
 		}
 		
 		// ENDING
@@ -232,6 +235,8 @@ package
 		
 		private function setupFrocessing():void
 		{
+			if (ExternalInterface.available) ExternalInterface.call("Flash_onStarted");
+			
 			arrWave = [];
 			arrBar = [];
 			for (var i:int = 0; i <= c; i++)
@@ -461,7 +466,8 @@ package
 		private function fromJs_start(__no:int):void
 		{
 			userId = __no;
-			setupStartFrame();
+			//setupStartFrame();
+			startFrameFadeIn();
 		}
 		
 		//setAttention(attention)
