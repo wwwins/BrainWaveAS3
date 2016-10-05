@@ -19,7 +19,8 @@ package
 	 */
 	public class Main extends F5MovieClip2D
 	{
-		public static const BAR_FPS:int = 10;
+		public static const BAR_FPS:int = 30;
+		public static const RANDOM_BAR_DATA:Boolean = false;
 		
 		public static const PAGE_STAND_BY:int = 0;
 		public static const PAGE_START:int = 1;
@@ -28,6 +29,10 @@ package
 		public static const PAGE_ANALYZING_EEG:int = 4;
 		public static const PAGE_FINISH:int = 5;
 		public static const PAGE_END:int = 6;
+		
+		public static const KEYPOINT_COORD_SYSTEM_TEXT:Number = 25.4; // 座標文字出現(alpha/beta...)
+		public static const KEYPOINT_CIRCLE_END:Number = 26.8; // 線條圈圈畫完
+		public static const KEYPOINT_ANALYZING:Number = 40.7; // 分析中
 		
 		private var stage_width:Number = stage.stageWidth;
 		private var stage_height:Number = stage.stageHeight;
@@ -45,6 +50,7 @@ package
 		private var userId:int = 0;
 		
 		private var tm:Timer;
+		private var demoTm:Timer;
 		
 		private var black:Black;
 		
@@ -69,10 +75,18 @@ package
 			initExternalInterface();
 			setupStandByFrame();
 			
-			// for demo
+			// demo code
 			//status = PAGE_MAIN;
 			//setupFrocessing();
-			// for demo
+			demoTm = new Timer(1000);
+			demoTm.addEventListener(TimerEvent.TIMER, demoTimerHandler);
+			demoTm.start();
+			// demo code
+		}
+		
+		private function demoTimerHandler(e:TimerEvent):void 
+		{
+			fromJs_setEEG(random(0, 16777215), random(0, 16777215), random(0, 16777215), random(0, 16777215), random(0, 16777215), random(0, 16777215), random(0, 16777215), random(0, 16777215));
 		}
 		
 		// 進入待機畫面
@@ -93,7 +107,17 @@ package
 		private function startFrameFadeIn():void 
 		{
 			TweenMax.to(black, .25, {alpha:1, onComplete:function():void { setupStartFrame(); }});
-			TweenMax.delayedCall(27.0, function():void {setupFrocessing(); });
+			TweenMax.delayedCall(KEYPOINT_COORD_SYSTEM_TEXT, function():void { coordSystemTextFadeIn(); });
+			TweenMax.delayedCall(KEYPOINT_CIRCLE_END, function():void { setupFrocessing(); });
+		}
+		
+		// 座標文字(alpha/beta...)
+		private function coordSystemTextFadeIn():void 
+		{
+			var page:MovieClip = new CoordText();
+			page.x = 396;
+			page.y = 318;
+			addChild(page);
 		}
 		
 		// 進入遊戲 intro 畫面
@@ -154,15 +178,21 @@ package
 			page.x = 397;
 			page.y = 302;
 			addChild(page);
+			//page.title1.txt.text = "描述1";
+			//page.title2.txt.text = "描述2";
+			//page.title3.txt.text = "描述3";
 			status = PAGE_FINISH;
 			
-			startPage.stop();
 			stopDrawingChart();
+			startPage.stop();
 			
 			TweenMax.delayedCall(20, function():void
 			{
 				setupEnding();
 			});
+			
+			// demo code
+			//var idx:int = handleEEGData(); trace(emotionTxtArray[idx]);
 		}
 		
 		// ENDING
@@ -262,19 +292,29 @@ package
 				arrBar[i].noLoop();
 			}
 			arrWave[0].noLoop();
+			noLoop();
 
 		}
 
 		public function draw():void
 		{
-			if (status > PAGE_MAIN)
+			if (status > PAGE_MAIN && status < PAGE_FINISH)
 			{
 				if (t % BAR_FPS == 1)
 				{
 					for (var i:int = 0; i < arrBar.length; i++)
 					{
-						arrBar[i].to = random(1, 25);
-						//arrBar[i].to = eegArray.shift()[i];
+						// random data
+						if (RANDOM_BAR_DATA) {
+							arrBar[i].to = random(1, 25);
+						}
+						else {
+							//arrBar[i].to = eegArray.shift();
+							//16777215/(26=bar.n+1) = 645278
+							var v:Number = eegArray.shift();
+							var v_to:int = int( v / 645278);
+							arrBar[i].to = v_to;
+						}
 					}
 				}
 				t = t + 1;
@@ -416,25 +456,25 @@ package
 		//每個參數值的範圍: 0~16777215(0xFFFFFF 3Byte的長整數)
 		private function fromJs_setEEG(__delta:int, __theta:int, __lowAlpha:int, __highAlpha:int, __lowBeta:int, __highBeta:int, __lowGamma:int, __highGamma:int):void
 		{
-			eegArray.push([__delta, __theta, __lowAlpha, __highAlpha, __lowBeta, __highBeta, __lowGamma, __highGamma]);
+			eegArray.push(__delta, __theta, __lowAlpha, __highAlpha, __lowBeta, __highBeta, __lowGamma, __highGamma);
 			var alpha:Number = __lowAlpha + __highAlpha;
 			var beta:Number = __lowBeta + __highBeta;
 			var arousal:Number = beta / alpha;
-			var valence:Number = __lowAlpha / __lowBeta - __highAlpha / __highBeta;
+			var valence:Number = (__highAlpha / __highBeta) - (__lowAlpha / __lowBeta);
 			// +,+:Happy(樂天型)
-			if (valence > 0 && arousal > 0) {
+			if (valence > 0 && arousal > 1) {
 				emotionArray[0] += 1;
 			}
 			// -,+:Angry(壓力型)
-			if (valence < 0 && arousal > 0) {
+			if (valence < 0 && arousal > 1) {
 				emotionArray[1] += 1;
 			}
 			// -,-:Sad(想太多型)
-			if (valence < 0 && arousal < 0) {
+			if (valence < 0 && arousal < 1) {
 				emotionArray[2] += 1;
 			}
 			// +,-:Relaxed(淡定型)
-			if (valence > 0 && arousal < 0) {
+			if (valence > 0 && arousal < 1) {
 				emotionArray[3] += 1;
 			}
 		}
