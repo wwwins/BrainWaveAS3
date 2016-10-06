@@ -241,9 +241,11 @@ package
 				this.removeChildAt(0);
 			}
 			
-			var page:MovieClip = new Ending();
-			page.x = (stage_width - page.width) * .5;
-			page.y = (stage_height - page.height) * .5;
+			//var page:MovieClip = new Ending();
+			//page.x = (stage_width - page.width) * .5;
+			//page.y = (stage_height - page.height) * .5;
+			//addChild(page);
+			var page:MovieClip = new EndingFLV();
 			addChild(page);
 			status = PAGE_END;
 		}
