@@ -1,6 +1,7 @@
 package
 {
 	import flash.display.MovieClip;
+	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.TimerEvent;
@@ -19,8 +20,9 @@ package
 	 */
 	public class Main extends F5MovieClip2D
 	{
-		public static const BAR_FPS:int = 30;
-		public static const RANDOM_BAR_DATA:Boolean = false;
+		public static const BAR_FPS:int = 10;
+		public static const RANDOM_BAR_DATA:Boolean = true;
+		public static const ENABLE_XY_AXIS:Boolean = false;
 		
 		public static const PAGE_STAND_BY:int = 0;
 		public static const PAGE_START:int = 1;
@@ -118,6 +120,8 @@ package
 			addChild(page);
 		
 			black = new Black();
+			black.width = stage_width;
+			black.height = stage_height;
 			black.alpha = 0;
 			addChild(black);
 			
@@ -148,8 +152,8 @@ package
 			//this.removeChildAt(this.numChildren - 1);
 			
 			startPage = new StartPage();
-			startPage.x = 168;
-			startPage.y = -22;
+			startPage.x = 0;
+			startPage.y = 0;
 			this.addChild(startPage);
 			
 			status = PAGE_START;
@@ -184,10 +188,21 @@ package
 			//this.removeChildAt(this.numChildren - 1);
 			
 			var page:MovieClip = new AnalyzingEEG();
-			page.x = 507;
-			page.y = 322;
+			page.scaleX = page.scaleY = 1.5;
+			page.x = 765;
+			page.y = 475;
 			addChild(page);
 			status = PAGE_ANALYZING_EEG;
+			
+			if (ENABLE_XY_AXIS) {
+				var line:Shape = new Shape();
+				line.graphics.lineStyle(2, 0xFFFFFF);
+				line.graphics.moveTo(1920 * 0.5, 0);
+				line.graphics.lineTo(1920 * 0.5, 1080);
+				line.graphics.moveTo(0, 1080 * 0.5);
+				line.graphics.lineTo(1920, 1080 * 0.5);
+				addChild(line);
+			}
 		
 		}
 		
@@ -195,17 +210,17 @@ package
 		private function setupFinishFrame(__gender:String, __age:String):void
 		{
 			// demo code
-			//var idx:int = handleEEGData(); trace(emotionTxtArray[idx]);
+			var idx:int = handleEEGData(); trace(emotionTxtArray[idx]);
 
 			this.removeChildAt(this.numChildren - 1);
 			
 			var page:MovieClip = new Finish();
-			page.x = 397;
-			page.y = 302;
+			page.x = 0;
+			page.y = 0;
 			addChild(page);
-			//page.title1.txt.text = "描述1";
-			//page.title2.txt.text = "描述2";
-			//page.title3.txt.text = "描述3";
+			page.title1.txt.text = "第一行一二三四五六七八九十";
+			page.title2.txt.text = "第二行一二三四五六七八九十";
+			page.title3.txt.text = "第三行一二三四五六七八九十";
 			status = PAGE_FINISH;
 			
 			stopDrawingChart();
@@ -535,8 +550,8 @@ import frocessing.display.F5MovieClip2D;
 
 class Bar extends F5MovieClip2D
 {
-	private var stage_width:Number = 1280;
-	private var stage_height:Number = 720;
+	private var stage_width:Number = 1920;
+	private var stage_height:Number = 1080;
 	private var _id:int = 0;
 	private var _n:int = 25;
 	private var _to:int = 0;
@@ -560,7 +575,7 @@ class Bar extends F5MovieClip2D
 	{
 		//trace("drawingBar:" + n);
 		
-		translate(960, stage_height - 200);
+		translate(1600, stage_height - 200);
 		
 		for (var i:int = 0; i <= c; i++)
 		{
@@ -645,7 +660,7 @@ class Wave extends F5MovieClip2D
 	{
 		//background(0, 0);
 		
-		translate(960 - 2, stage_height + 220);
+		translate(1600 - 2, stage_height + 220 + 360);
 		//translate(0, 50);
 		//translate(897, 500);
 		
@@ -698,7 +713,7 @@ class HeartBeatWave extends F5MovieClip2DBmp
 	
 	public function draw():void
 	{
-		translate(960 - 2, stage_height + 220);
+		translate(1600 - 2, stage_height + 220 + 360);
 		//translate(0, 50);
 		stroke(255);
 		sx0 = sx;
@@ -747,7 +762,7 @@ class SineWave extends F5MovieClip2D
 	
 	public function draw():void
 	{
-		translate(960 - 2, stage_height + 220);
+		translate(1600 - 2, stage_height + 220 + 360);
 		//translate(0, 50);
 		stroke(255);
 		calcWave();
