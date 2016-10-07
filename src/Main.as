@@ -205,6 +205,13 @@ package
 			}
 		
 		}
+
+		private function delayFinishFrame(__gender:String, __age:String):void
+		{
+			trace("currentFrame:"+startPage.currentFrame+","+startPage.totalFrames);
+			var frame:int =  random(startPage.currentFrame, startPage.totalFrames);
+			TweenMax.delayedCall(frame-startPage.currentFrame, setupFinishFrame, [__gender, __age], true);
+		}
 		
 		// 結果畫面
 		private function setupFinishFrame(__gender:String, __age:String):void
@@ -307,7 +314,7 @@ package
 					myText.text = "50Hz";
 				}
 				myText.x = stage_width - 320 + (rect_w + 5) * i;
-				myText.y = stage_height - 20;
+				myText.y = stage_height - 70;
 				addChild(myText);
 			}
 
@@ -395,7 +402,7 @@ package
 			{
 				trace("Flash_onLoading");
 				if (ExternalInterface.available) ExternalInterface.call("Flash_onLoading", 1);
-				setupFinishFrame("女","18");
+				delayFinishFrame("女","18");
 			}
 			if (status == PAGE_FINISH)
 			{
@@ -464,7 +471,7 @@ package
 		//age: string (年齡區間: 內容還未定)
 		private function fromJs_showFinish(__gender:String, __age:String):void
 		{
-			setupFinishFrame(__gender, __age);
+			delayFinishFrame(__gender, __age);
 			if (ExternalInterface.available) ExternalInterface.call("Flash_onFinish");
 		}
 		
@@ -577,7 +584,7 @@ class Bar extends F5MovieClip2D
 	{
 		//trace("drawingBar:" + n);
 		
-		translate(1600, stage_height - 200);
+		translate(1600, stage_height - 250);
 		
 		for (var i:int = 0; i <= c; i++)
 		{
@@ -662,7 +669,7 @@ class Wave extends F5MovieClip2D
 	{
 		//background(0, 0);
 		
-		translate(1600 - 2, stage_height + 220 + 360);
+		translate(1600 - 2, stage_height + 220 + 310);
 		//translate(0, 50);
 		//translate(897, 500);
 		
@@ -715,7 +722,7 @@ class HeartBeatWave extends F5MovieClip2DBmp
 	
 	public function draw():void
 	{
-		translate(1600 - 2, stage_height + 220 + 360);
+		translate(1600 - 2, stage_height + 220 + 310);
 		//translate(0, 50);
 		stroke(255);
 		sx0 = sx;
@@ -764,7 +771,7 @@ class SineWave extends F5MovieClip2D
 	
 	public function draw():void
 	{
-		translate(1600 - 2, stage_height + 220 + 360);
+		translate(1600 - 2, stage_height + 220 + 310);
 		//translate(0, 50);
 		stroke(255);
 		calcWave();
