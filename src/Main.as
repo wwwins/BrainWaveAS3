@@ -20,9 +20,10 @@ package
 	 */
 	public class Main extends F5MovieClip2D
 	{
-		public static const BAR_FPS:int = 10;
-		public static const RANDOM_BAR_DATA:Boolean = true;
+		public static const BAR_FPS:int = 30;
+		public static const RANDOM_BAR_DATA:Boolean = false;
 		public static const ENABLE_XY_AXIS:Boolean = false;
+		public static const ENABLE_SCALE_XY:Boolean = false;
 		
 		public static const PAGE_STAND_BY:int = 0;
 		public static const PAGE_START:int = 1;
@@ -109,6 +110,7 @@ package
 		private function demoTimerHandler(e:TimerEvent):void 
 		{
 			fromJs_setEEG(random(0, 16777215), random(0, 16777215), random(0, 16777215), random(0, 16777215), random(0, 16777215), random(0, 16777215), random(0, 16777215), random(0, 16777215));
+			fromJs_setAttention(random(0, 100));
 		}
 		
 		// 進入待機畫面
@@ -218,6 +220,7 @@ package
 		{
 			// demo code
 			var idx:int = handleEEGData(); trace(emotionTxtArray[idx]);
+			// demo code
 
 			this.removeChildAt(this.numChildren - 1);
 			
@@ -225,9 +228,9 @@ package
 			page.x = 0;
 			page.y = 0;
 			addChild(page);
-			page.title1.txt.text = "第一行一二三四五六七八九十";
-			page.title2.txt.text = "第二行一二三四五六七八九十";
-			page.title3.txt.text = "第三行一二三四五六七八九十";
+			page.title1.txt.text = "["+emotionTxtArray[idx]+"]";
+			page.title2.txt.text = "身體想表達的其實是";
+			page.title3.txt.text = "心情好、氣色好、立刻變身發電機!";
 			status = PAGE_FINISH;
 			
 			stopDrawingChart();
@@ -500,6 +503,12 @@ package
 		private function fromJs_setAttention(__attention:int):void
 		{
 			attentionArray.push(__attention);
+			if (ENABLE_SCALE_XY) {
+				if (status > PAGE_MAIN && status < PAGE_FINISH) {
+					var scale:Number = (100 - int(__attention / 10))/100;
+					TweenMax.to(startPage, .5, {scaleX:scale, scaleY:scale});
+				}
+			}
 		}
 		
 		//setEEG(delta, theta, lowAlpha, highAlpha, lowBeta, highBeta, lowGamma, highGamma)
