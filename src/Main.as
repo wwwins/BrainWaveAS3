@@ -88,21 +88,24 @@ package
  * http://jsonviewer.stack.hu/
 {
     "male": {
-		"text0": ["emotion0-1","emotion0-2","emotion0-3","emotion0-4"],
-		"text1": ["emotion1-1","emotion1-2","emotion1-3","emotion1-4"],
-		"text2": ["emotion2-1","emotion2-2","emotion2-3","emotion2-4"],
-		"text3": ["emotion3-1","emotion3-2","emotion3-3","emotion3-4"]
+		"text0": [["emotion0-1-1","emotion0-1-2"],["emotion0-2-1","emotion0-2-2"],["emotion0-3-1-1","emotion0-3-1-2"],["emotion0-4-1","emotion0-4-2"]],
+		"text1": [["emotion1-1-1","emotion1-1-2"],["emotion1-2-1","emotion1-2-2"],["emotion1-3-1-1","emotion1-3-1-2"],["emotion1-4-1","emotion1-4-2"]],
+		"text2": [["emotion2-1-1","emotion2-1-2"],["emotion2-2-1","emotion2-2-2"],["emotion2-3-1-1","emotion2-3-1-2"],["emotion2-4-1","emotion2-4-2"]],
+		"text3": [["emotion3-1-1","emotion3-1-2"],["emotion3-2-1","emotion3-2-2"],["emotion3-3-1-1","emotion3-3-1-2"],["emotion3-4-1","emotion3-4-2"]],
     },
 	"female": {
-		"text0": ["emotion0-1","emotion0-2","emotion0-3","emotion0-4"],
-		"text1": ["emotion1-1","emotion1-2","emotion1-3","emotion1-4"],
-		"text2": ["emotion2-1","emotion2-2","emotion2-3","emotion2-4"],
-		"text3": ["emotion3-1","emotion3-2","emotion3-3","emotion3-4"]
+		"text0": [["emotion0-1-1","emotion0-1-2"],["emotion0-2-1","emotion0-2-2"],["emotion0-3-1-1","emotion0-3-1-2"],["emotion0-4-1","emotion0-4-2"]],
+		"text1": [["emotion1-1-1","emotion1-1-2"],["emotion1-2-1","emotion1-2-2"],["emotion1-3-1-1","emotion1-3-1-2"],["emotion1-4-1","emotion1-4-2"]],
+		"text2": [["emotion2-1-1","emotion2-1-2"],["emotion2-2-1","emotion2-2-2"],["emotion2-3-1-1","emotion2-3-1-2"],["emotion2-4-1","emotion2-4-2"]],
+		"text3": [["emotion3-1-1","emotion3-1-2"],["emotion3-2-1","emotion3-2-2"],["emotion3-3-1-1","emotion3-3-1-2"],["emotion3-4-1","emotion3-4-2"]],
 	}
 }
 */
-			//var data:Object = JSON.parse('{"male":{"text0":["emotion0-1","emotion0-2","emotion0-3","emotion0-4"],"text1":["emotion1-1","emotion1-2","emotion1-3","emotion1-4"],"text2":["emotion2-1","emotion2-2","emotion2-3","emotion2-4"],"text3":["emotion3-1","emotion3-2","emotion3-3","emotion3-4"]},"female":{"text0":["emotion0-1","emotion0-2","emotion0-3","emotion0-4"],"text1":["emotion1-1","emotion1-2","emotion1-3","emotion1-4"],"text2":["emotion2-1","emotion2-2","emotion2-3","emotion2-4"],"text3":["emotion3-1","emotion3-2","emotion3-3","emotion3-4"]}}');
-			//trace("data:"+data.male.text0[1]);
+			//var data:Object = JSON.parse('{"male":{"text0":[["emotion0-1-1","emotion0-1-2"],["emotion0-2-1","emotion0-2-2"],["emotion0-3-1-1","emotion0-3-1-2"],["emotion0-4-1","emotion0-4-2"]],"text1":[["emotion1-1-1","emotion1-1-2"],["emotion1-2-1","emotion1-2-2"],["emotion1-3-1-1","emotion1-3-1-2"],["emotion1-4-1","emotion1-4-2"]],"text2":[["emotion2-1-1","emotion2-1-2"],["emotion2-2-1","emotion2-2-2"],["emotion2-3-1-1","emotion2-3-1-2"],["emotion2-4-1","emotion2-4-2"]],"text3":[["emotion3-1-1","emotion3-1-2"],["emotion3-2-1","emotion3-2-2"],["emotion3-3-1-1","emotion3-3-1-2"],["emotion3-4-1","emotion3-4-2"]],},"female":{"text0":[["emotion0-1-1","emotion0-1-2"],["emotion0-2-1","emotion0-2-2"],["emotion0-3-1-1","emotion0-3-1-2"],["emotion0-4-1","emotion0-4-2"]],"text1":[["emotion1-1-1","emotion1-1-2"],["emotion1-2-1","emotion1-2-2"],["emotion1-3-1-1","emotion1-3-1-2"],["emotion1-4-1","emotion1-4-2"]],"text2":[["emotion2-1-1","emotion2-1-2"],["emotion2-2-1","emotion2-2-2"],["emotion2-3-1-1","emotion2-3-1-2"],["emotion2-4-1","emotion2-4-2"]],"text3":[["emotion3-1-1","emotion3-1-2"],["emotion3-2-1","emotion3-2-2"],["emotion3-3-1-1","emotion3-3-1-2"],["emotion3-4-1","emotion3-4-2"]],}}');
+			// 姓別.年齡.情緒.第一行
+			// 姓別.年齡.情緒.第二行
+			// data.male.text0[1][0]
+			//trace("data:"+data.male.text0[1][0]);
 			
 			// demo code
 		}
@@ -221,6 +224,22 @@ package
 			// demo code
 			var idx:int = handleEEGData(); trace(emotionTxtArray[idx]);
 			// demo code
+			
+			var gender:String = 'male';
+			if (__gender == '女性') {
+				gender = 'female'
+			}
+			var age:String = 'text0';
+			if (__age == '26-35歲') {
+				age = 'text1';
+			}
+			if (__age == '36-45歲') {
+				age = 'text2';
+			}
+			if (__age == '46歲以上') {
+				age = 'text3';
+			}
+			//data[gender][age][idx]
 
 			this.removeChildAt(this.numChildren - 1);
 			
