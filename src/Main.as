@@ -35,7 +35,7 @@ package
 		
 		public static const KEYPOINT_COORD_SYSTEM_TEXT:Number = 25.4; // 座標文字出現(alpha/beta...)
 		public static const KEYPOINT_CIRCLE_END:Number = 26.8; // 線條圈圈畫完
-		public static const KEYPOINT_ANALYZING:Number = 40.7; // 分析中
+		public static const KEYPOINT_ANALYZING:Number = 27.0; // 分析中
 		
 		private var stage_width:Number = stage.stageWidth;
 		private var stage_height:Number = stage.stageHeight;
@@ -177,7 +177,7 @@ package
 			//page.y = (stage_height - page.height) * .5;
 			//addChild(page);
 			
-			TweenMax.delayedCall(40.5, function():void
+			TweenMax.delayedCall(KEYPOINT_ANALYZING, function():void
 			{
 				setupAnalyzingEEGFrame();
 			});
@@ -266,16 +266,22 @@ package
 		// ENDING
 		private function setupEnding():void
 		{
+			/* Remove all movieclips
 			while (this.numChildren) {
 				this.removeChildAt(0);
 			}
+			*/
 			
 			//var page:MovieClip = new Ending();
 			//page.x = (stage_width - page.width) * .5;
 			//page.y = (stage_height - page.height) * .5;
 			//addChild(page);
 			var page:MovieClip = new EndingFLV();
+			page.alpha = 0;
 			addChild(page);
+			// alpha in
+			TweenMax.to(page, .5, {alpha:1});
+
 			status = PAGE_END;
 		}
 		
