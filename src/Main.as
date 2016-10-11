@@ -194,7 +194,7 @@ package
 			
 			var page:MovieClip = new AnalyzingEEG();
 			page.scaleX = page.scaleY = 1.5;
-			page.x = 765;
+			page.x = 700;
 			page.y = 475;
 			addChild(page);
 			status = PAGE_ANALYZING_EEG;
@@ -247,9 +247,9 @@ package
 			page.x = 0;
 			page.y = 0;
 			addChild(page);
-			page.title1.txt.text = "["+emotionTxtArray[idx]+"]";
-			page.title2.txt.text = "身體想表達的其實是";
-			page.title3.txt.text = "心情好、氣色好、立刻變身發電機!";
+			//page.title1.txt.text = "分析結果";
+			page.title2.txt.text = "["+emotionTxtArray[idx]+"]";
+			page.title3.txt.text = "快樂能讓體內的能量滿檔\r不只讓外在更有型，健康也滿分！";
 			status = PAGE_FINISH;
 			
 			stopDrawingChart();
