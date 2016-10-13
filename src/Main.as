@@ -51,7 +51,7 @@ package
 		private var emotionTxtArray:Array;
 		private var arrBar:Array;
 		private var arrWave:Array;
-		private var userId:int = 0;
+		private var userId:String = "000";
 		
 		private var tm:Timer;
 		private var demoTm:Timer;
@@ -59,6 +59,7 @@ package
 		private var black:Black;
 		
 		private var startPage:StartPage;
+		private var sn:SerialNumber;
 		
 		public function Main()
 		{
@@ -152,6 +153,7 @@ package
 			page.x = 396;
 			page.y = 318;
 			addChild(page);
+			
 		}
 		
 		// 進入遊戲 intro 畫面
@@ -211,7 +213,14 @@ package
 				line.graphics.lineTo(1920, 1080 * 0.5);
 				addChild(line);
 			}
-		
+
+			// 加入序號
+			sn = new SerialNumber();
+			sn.x = 60;
+			sn.y = 938;
+			sn.txt.text = userId.substr(userId.length - 3, 3);
+			addChild(sn);
+
 		}
 
 		private function delayFinishFrame(__gender:String, __age:String):void
@@ -257,6 +266,9 @@ package
 			//page.title1.txt.text = "分析結果";
 			page.title2.txt.text = "["+emotionTxtArray[idx]+"]";
 			page.title3.txt.text = "快樂能讓體內的能量滿檔\r不只讓外在更有型，健康也滿分！";
+			
+			addChild(sn); // 將序號搬到最上層
+			
 			status = PAGE_FINISH;
 			
 			stopDrawingChart();
@@ -526,7 +538,7 @@ package
 		//no參數: int : 體驗編號
 		private function fromJs_start(__no:int):void
 		{
-			userId = __no;
+			userId = "000"+__no;
 			//setupStartFrame();
 			startFrameFadeIn();
 		}
