@@ -217,8 +217,10 @@ package
 		private function delayFinishFrame(__gender:String, __age:String):void
 		{
 			trace("currentFrame:"+startPage.currentFrame+","+startPage.totalFrames);
-			var frame:int =  random(startPage.currentFrame, startPage.totalFrames);
-			TweenMax.delayedCall(frame-startPage.currentFrame, setupFinishFrame, [__gender, __age], true);
+			//var frame:int =  random(startPage.currentFrame, startPage.totalFrames);
+			//TweenMax.delayedCall(frame-startPage.currentFrame, setupFinishFrame, [__gender, __age], true);
+			var frame:int =  random(10, 90);
+			TweenMax.delayedCall(frame, setupFinishFrame, [__gender, __age], true);
 		}
 		
 		// 結果畫面
