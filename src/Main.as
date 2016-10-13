@@ -197,6 +197,15 @@ package
 			
 			//this.removeChildAt(this.numChildren - 1);
 			
+			// 加入序號
+			sn = new SerialNumber();
+			sn.x = 60;
+			sn.y = 938;
+			sn.alpha = 0;
+			sn.txt.text = userId.substr(userId.length - 3, 3);
+			addChild(sn);
+			TweenMax.to(sn, 0.25, {alpha:1});
+
 			var page:MovieClip = new AnalyzingEEG();
 			page.scaleX = page.scaleY = 1.5;
 			page.x = 700;
@@ -213,13 +222,6 @@ package
 				line.graphics.lineTo(1920, 1080 * 0.5);
 				addChild(line);
 			}
-
-			// 加入序號
-			sn = new SerialNumber();
-			sn.x = 60;
-			sn.y = 938;
-			sn.txt.text = userId.substr(userId.length - 3, 3);
-			addChild(sn);
 
 		}
 
