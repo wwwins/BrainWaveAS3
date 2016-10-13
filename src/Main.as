@@ -24,6 +24,7 @@ package
 		public static const RANDOM_BAR_DATA:Boolean = false;
 		public static const ENABLE_XY_AXIS:Boolean = false;
 		public static const ENABLE_SCALE_XY:Boolean = false;
+		public static const DEMO:Boolean = true;
 		
 		public static const PAGE_STAND_BY:int = 0;
 		public static const PAGE_START:int = 1;
@@ -79,11 +80,13 @@ package
 			setupStandByFrame();
 			
 			// demo code
-			//status = PAGE_MAIN;
-			//setupFrocessing();
-			demoTm = new Timer(1000);
-			demoTm.addEventListener(TimerEvent.TIMER, demoTimerHandler);
-			demoTm.start();
+			if (DEMO) {
+				//status = PAGE_MAIN;
+				//setupFrocessing();
+				demoTm = new Timer(1000);
+				demoTm.addEventListener(TimerEvent.TIMER, demoTimerHandler);
+				demoTm.start();
+			}
 /*
  * http://jsonviewer.stack.hu/
 {
@@ -222,7 +225,9 @@ package
 		private function setupFinishFrame(__gender:String, __age:String):void
 		{
 			// demo code
-			var idx:int = handleEEGData(); trace(emotionTxtArray[idx]);
+			if (DEMO) {
+				var idx:int = handleEEGData(); trace(emotionTxtArray[idx]);
+			}
 			// demo code
 			
 			var gender:String = 'male';
@@ -408,34 +413,36 @@ package
 			trace("mousePressed:" + status);
 			//////////////////////////////
 			// demo code
-			if (status == PAGE_STAND_BY)
-			{
-				trace("Flash_onReady");
-				if (ExternalInterface.available) ExternalInterface.call("Flash_onReady");
-				//setupStartFrame();
-				startFrameFadeIn();
-			}
-			if (status == PAGE_START)
-			{
-				trace("Flash_onStarted");
-				if (ExternalInterface.available) ExternalInterface.call("Flash_onStarted");
-			}
-			if (status == PAGE_MAIN)
-			{
-			}
-			if (status == PAGE_FROCESSING)
-			{
-			}
-			if (status == PAGE_ANALYZING_EEG)
-			{
-				trace("Flash_onLoading");
-				if (ExternalInterface.available) ExternalInterface.call("Flash_onLoading", 1);
-				delayFinishFrame("女","18");
-			}
-			if (status == PAGE_FINISH)
-			{
-				trace("Flash_onFinish");
-				if (ExternalInterface.available) ExternalInterface.call("Flash_onFinish");
+			if (DEMO) {
+				if (status == PAGE_STAND_BY)
+				{
+					trace("Flash_onReady");
+					if (ExternalInterface.available) ExternalInterface.call("Flash_onReady");
+					//setupStartFrame();
+					startFrameFadeIn();
+				}
+				if (status == PAGE_START)
+				{
+					trace("Flash_onStarted");
+					if (ExternalInterface.available) ExternalInterface.call("Flash_onStarted");
+				}
+				if (status == PAGE_MAIN)
+				{
+				}
+				if (status == PAGE_FROCESSING)
+				{
+				}
+				if (status == PAGE_ANALYZING_EEG)
+				{
+					trace("Flash_onLoading");
+					if (ExternalInterface.available) ExternalInterface.call("Flash_onLoading", 1);
+					delayFinishFrame("女","18");
+				}
+				if (status == PAGE_FINISH)
+				{
+					trace("Flash_onFinish");
+					if (ExternalInterface.available) ExternalInterface.call("Flash_onFinish");
+				}
 			}
 			// demo code
 			//////////////////////////////
