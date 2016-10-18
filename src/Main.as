@@ -24,7 +24,7 @@ package
 		public static const RANDOM_BAR_DATA:Boolean = false;
 		public static const ENABLE_XY_AXIS:Boolean = false;
 		public static const ENABLE_SCALE_XY:Boolean = false;
-		public static const DEMO:Boolean = true;
+		public static const DEMO:Boolean = false;
 		
 		public static const PAGE_STAND_BY:int = 0;
 		public static const PAGE_START:int = 1;
@@ -564,7 +564,7 @@ package
 			var alpha:Number = __lowAlpha + __highAlpha;
 			var beta:Number = __lowBeta + __highBeta;
 			var arousal:Number = beta / alpha;
-			var valence:Number = (__highAlpha / __highBeta) - (__lowAlpha / __lowBeta);
+			var valence:Number = (__lowAlpha / __lowBeta) - (__highAlpha / __highBeta);
 			// +,+:Happy(樂天型)
 			if (valence > 0 && arousal > 1) {
 				emotionArray[0] += 1;
