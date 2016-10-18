@@ -24,7 +24,7 @@ package
 		public static const RANDOM_BAR_DATA:Boolean = false;
 		public static const ENABLE_XY_AXIS:Boolean = false;
 		public static const ENABLE_SCALE_XY:Boolean = false;
-		public static const DEMO:Boolean = false;
+		public static const DEMO:Boolean = true;
 		
 		public static const PAGE_STAND_BY:int = 0;
 		public static const PAGE_START:int = 1;
@@ -37,6 +37,7 @@ package
 		public static const KEYPOINT_COORD_SYSTEM_TEXT:Number = 25.4; // 座標文字出現(alpha/beta...)
 		public static const KEYPOINT_CIRCLE_END:Number = 26.8; // 線條圈圈畫完
 		public static const KEYPOINT_ANALYZING:Number = 27.0; // 分析中
+		public static const FINISH_DURATION:Number = 8.0;	// 結果頁顯示時間
 		
 		private var stage_width:Number = stage.stageWidth;
 		private var stage_height:Number = stage.stageHeight;
@@ -62,6 +63,7 @@ package
 		private var sn:SerialNumber;
 		
 		private var rdata:Object; // result data
+		private var emotion_idx:int;
 		
 		public function Main()
 		{
@@ -77,7 +79,8 @@ package
 			eegArray = [];
 			attentionArray = [];
 			emotionArray = [0, 0, 0, 0];
-			emotionTxtArray = ['樂天型', '壓力型', '多慮型', '淡定型'];;
+			emotionTxtArray = ['樂天型', '壓力型', '多慮型', '淡定型'];
+			emotion_idx = -1;
 			
 			initExternalInterface();
 			setupStandByFrame();
@@ -94,7 +97,7 @@ package
 			 * http://jsonviewer.stack.hu/
 			 * see messages.json
 			*/
-			rdata = JSON.parse('{"male":{"text0":[["快樂讓體內的能量滿檔","不只外在有型，健康也滿分","快樂情緒讓精神飽滿，","全身都很有力量！","青春不留白才開心，","但健康不能交白卷喔！"],["長期累積壓力讓身體生氣，","小心健康離你遠去！"],["想太多容易累積身體負擔，","好日子壞日子都要笑著前進"],["心情放鬆，身體更有力量，","每個細胞都在微笑呢～","好空氣好心情，心情才會平衡，","讓周圍變成我的正向磁場！","心寬不能體胖～","代謝良好，體脂肪就不高。"]],"text1":[["盡情享受各種質感生活，","健康當然不能落後！","開心就盡情笑吧！","可以活化免疫細胞哦！","愉悅心情會產生腦內啡，","讓全身更有衝勁。"],["有壓力就要適度釋放，","留點力氣才能繼續拚！"],["有些事不要想那麼多，","你難過身體也會難過。"],["放鬆可以加速新陳代謝，","加強體內的恢復力。","維持良好的身體循環，","健康才能好好享受生活。","保持穩定情緒，多吃多動，","健康就是最好的體態。"]],"text2":[["正向心理加上健康身體，","就是面面俱到。","精神愉悅，代謝良好，","全身都振奮起來！","多笑會產生化學作用：","減少壓力、提高免疫力。"],["別讓怒氣引起的衝動","打亂健康的節奏。"],["煩惱需要排解過濾，","還心情和身體一份清淨。"],["良好的循環會反映到外在，","自信顏值渾然天成。","穩定的正向情緒促進代謝，","每個呼吸都是活力來源。","愉悅的心情、健康的笑容","最能釋放幸福荷爾蒙。"]],"text3":[["快樂的笑可以舒緩壓力，","活化身體各個細胞。","健康的臉龐自然散發光采，","怎麼看都有型！","真正的快樂來自智慧選擇，","為健康把關最美好的。"],["別生氣了。細胞容易衰老，","臉色也會變差。"],["煩惱太多身體會喘不過氣，","要時常給自己透透氣！"],["只要心情定下來，","自然散發健康的光彩。","穩定呼吸帶給身體正能量，","心平氣和就是一種養生。","身心調和、養分均衡, ","讓體內的良性循環散發健康的光彩。"]]},"female":{"text0":[["每天笑一個！心情年輕了，","身體也跟著年輕起來。","我的快樂為氣色加分，","健康亮眼是理所當然的囉！","身心健康的樣子最迷人了，","距離再遠都魅力難擋！"],["別被怒氣破壞高顏值，","適度減壓就能喚回迷人氣色"],["心情倦怠會影響身體表現，","不小心就把心事寫臉上。"],["穩定情緒能促進體循環，","健康氣色讓顏值破錶！","就是這樣！維持淡定呼吸，","平凡日子也能充滿活力。","健康從身心調適開始。","元氣好，自然散發蘋果光！"]],"text1":[["好心情給我好氣色，","從頭到腳都散發健康美。","大小煩惱不上身，","用笑容凍結青春元素！","快樂在體內產生化學作用，","讓愛笑的眼睛特別放電～"],["愛生氣會加快細胞老化，","別讓壞情緒傷了身體。"],["丟掉煩惱才能好好入眠，","用美容覺把青春睡回來！"],["心情輕鬆身體也跟著放鬆，","整個人都輕盈了起來！","身心協調、代謝力提升，","就是最好的健康狀況。","與各種負面情緒保持距離，","健康就能輕鬆到手。"]],"text2":[["快樂的祕密在於適度調整","身體和心情的節奏。","健康不只是吃得開心，","更要吃出均衡營養。","心情愉快能減緩壓力，","展現健康氣色的魅力。"],["給自己留一點空間，","別讓壓力威脅妳的健康！"],["深呼吸。阿雜的事會過去，","但健康要一直守護下去。"],["平衡呼吸能活化能量，","整個人更有元氣。","愉悅情緒能幫助新陳代謝，","從頭到腳形成正循環。","代謝調和幫助氣色紅潤，","均衡飲食則為魅力加分！"]],"text3":[["好心情能讓身體放輕鬆，","外在壞因子都不怕。","愉快心情讓生活更精采，","但要對身體好才有意義。","開心時腦細胞含氧量提升，","也能讓精神振奮。"],["適度紓解心中的怒氣，","身體才能釋放緊繃。"],["難過別往心裡去，放輕鬆","就是給身體好日子過。"],["心境輕鬆，代謝狀況良好，","給我犯規的好氣色。","淡定可以維持代謝平衡，","讓妳的魅力不降溫。","呼吸健康，充滿活力，","身體修復力也會變強唷！"]]}}');
+			rdata = JSON.parse('{"male":{"text0":[["快樂讓體內的能量滿檔","不只外在有型，健康也滿分","快樂情緒讓精神飽滿","全身都很有力量！","青春不留白才開心","但健康不能交白卷喔！"],["長期累積壓力讓身體生氣","小心健康離你遠去！"],["想太多容易累積身體負擔","好日子壞日子都要笑著前進"],["心情放鬆，身體更有力量","每個細胞都在微笑呢～","好空氣好心情","讓周圍變成我的正向磁場！","心寬不能體胖","代謝良好，體脂肪就不高。"]],"text1":[["盡情享受各種質感生活","健康當然不能落後！","開心就盡情笑吧","可以活化免疫細胞哦！","愉悅心情會產生腦內啡","讓全身更有衝勁。"],["有壓力就要適度釋放","留點力氣才能繼續拚！"],["有些事不要想那麼多","你難過身體也會難過。"],["放鬆可以加速新陳代謝","加強體內的恢復力。","維持良好的身體循環","健康才能好好享受生活。","保持穩定情緒，多吃多動","健康就是最好的體態。"]],"text2":[["正向心理加上健康身體","就是面面俱到。","精神愉悅，代謝良好","全身都振奮起來！","多笑會產生化學作用","減少壓力、提高免疫力。"],["別讓怒氣引起的衝動","打亂健康的節奏。"],["煩惱需要排解過濾","還心情和身體一份清淨。"],["良好的循環會反映到外在","自信顏值渾然天成。","穩定的正向情緒促進代謝","每個呼吸都是活力來源。","愉悅的心情、健康的笑容","最能釋放幸福荷爾蒙。"]],"text3":[["快樂的笑可以舒緩壓力","活化身體各個細胞。","健康的臉龐自然散發光采","怎麼看都有型！","身體健康才是真正的快樂","記得為自己聰明選擇。"],["別生氣了。細胞容易衰老","臉色也會變差。"],["煩惱太多身體會喘不過氣","要時常給自己透透氣！"],["只要心情定下來","自然散發健康的光彩。","穩定呼吸帶給身體正能量","心平氣和就是一種養生。","身心調和、養分均衡","讓體內的良性循環散發健康的光彩。"]]},"female":{"text0":[["每天笑一個！心情年輕了","身體也跟著年輕起來。","我的快樂為氣色加分","健康亮眼是理所當然的囉！","身心健康的樣子最迷人了","距離再遠都魅力難擋！"],["別被怒氣破壞高顏值","適度減壓就能喚回迷人氣色"],["心情倦怠會影響身體表現","不小心就把心事寫臉上。"],["穩定情緒能促進體循環","健康氣色讓顏值破錶！","就是這樣！維持淡定呼吸","平凡日子也能充滿活力。","健康從身心調適開始","元氣好，自然散發蘋果光！"]],"text1":[["好心情給我好氣色","從頭到腳都散發健康美。","大小煩惱不上身","用笑容凍結青春元素！","快樂在體內產生化學作用","讓愛笑的眼睛特別放電～"],["愛生氣會加快細胞老化","別讓壞情緒傷了身體。"],["丟掉煩惱才能好好入眠","用美容覺把青春睡回來！"],["心情輕鬆身體也跟著放鬆","整個人都輕盈了起來！","身心協調、代謝力提升","就是最好的健康狀況。","與各種負面情緒保持距離","健康就能輕鬆到手。"]],"text2":[["快樂的祕密在於適度調整","身體和心情的節奏。","健康不只是吃得開心","更要吃出均衡營養。","心情愉快能減緩壓力","展現健康氣色的魅力。"],["給自己留一點空間","別讓壓力威脅妳的健康！"],["深呼吸。阿雜的事會過去","但健康要一直守護下去。"],["平衡呼吸能強化能量","整個人更有元氣。","愉悅情緒能幫助新陳代謝","從頭到腳形成正循環。","代謝調和幫助氣色紅潤","均衡飲食則為魅力加分！"]],"text3":[["好心情讓身體放輕鬆","外在壞因子都不怕。","愉快心情讓生活更精采","但要對身體好才有意義。","開心時腦細胞含氧量提升","也能讓精神振奮。"],["適度紓解心中的怒氣","身體才能釋放緊繃。"],["難過別往心裡去，放輕鬆","就是給身體好日子過。"],["心境輕鬆，代謝狀況良好","給我犯規的好氣色。","淡定可以維持代謝平衡","讓妳的魅力不降溫。","呼吸健康，充滿活力","身體修復力也會變強唷！"]]}}');
 			// 姓別.年齡.情緒.第一行
 			// 姓別.年齡.情緒.第二行
 			// rdata.male.text0[1][0]
@@ -226,11 +229,9 @@ package
 		// 結果畫面
 		private function setupFinishFrame(__gender:String, __age:String):void
 		{
-			// demo code
-			if (DEMO) {
-				var idx:int = handleEEGData(); trace(emotionTxtArray[idx]);
+			if (emotion_idx < 0) {
+				emotion_idx = handleEEGData(); trace(emotionTxtArray[emotion_idx]);
 			}
-			// demo code
 			
 			var gender:String = 'male';
 			if (__gender == '女性') {
@@ -256,12 +257,12 @@ package
 			addChild(page);
 			
 			var rand_msgid:int = 2 * (int(userId) % 3);
-			var buf:String = rdata[gender][age][idx][0] + "\r" + rdata[gender][age][idx][1];
-			if (idx == 0 || idx == 3) {
-				buf = rdata[gender][age][idx][rand_msgid] + "\r" + rdata[gender][age][idx][rand_msgid+1];
+			var buf:String = rdata[gender][age][emotion_idx][0] + "\r" + rdata[gender][age][emotion_idx][1];
+			if (emotion_idx == 0 || emotion_idx == 3) {
+				buf = rdata[gender][age][emotion_idx][rand_msgid] + "\r" + rdata[gender][age][emotion_idx][rand_msgid+1];
 			}
 			//page.title1.txt.text = "分析結果";
-			page.title2.txt.text = "["+emotionTxtArray[idx]+"]";
+			page.title2.txt.text = "["+emotionTxtArray[emotion_idx]+"]";
 			page.title3.txt.text = buf;
 			
 			addChild(sn); // 將序號搬到最上層
@@ -271,7 +272,7 @@ package
 			stopDrawingChart();
 			startPage.stop();
 			
-			TweenMax.delayedCall(20, function():void
+			TweenMax.delayedCall(FINISH_DURATION, function():void
 			{
 				setupEnding();
 			});
@@ -526,8 +527,8 @@ package
 		private function fromJs_showLoading():void
 		{
 			//setupAnalyzingEEGFrame();
-			var idx:int = handleEEGData();
-			if (ExternalInterface.available) ExternalInterface.call("Flash_onLoading", emotionTxtArray[idx]);
+			emotion_idx = handleEEGData();
+			if (ExternalInterface.available) ExternalInterface.call("Flash_onLoading", emotionTxtArray[emotion_idx]);
 		}
 		
 		//start(no)
