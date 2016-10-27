@@ -8,7 +8,10 @@ obj/*
 dist/*
 report/*
 assets/*
+sample/*
 libs/*
+src/com/*
+src/frocessing/*
 
 .settings/*
 .actionScriptProperties
